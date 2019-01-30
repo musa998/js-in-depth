@@ -1,15 +1,20 @@
-function Event(name, isAdult, id, date) {
+function Event(name, isAdult, id, date, price) {
     this.eventName = name;
     this.isForAdult = isAdult;
     this.id = id;
     this.clients = [];
     this.date = date;
+    this.entryPrice = price;
+    this.isArhived = false;
+
 }
 
-function Client(name, gender, age) {
+function Client(name, gender, age, walet, id) {
     this.name = name;
     this.gender = gender;
     this.age = age;
+    this.walet = walet;
+    this.isVip = false;
 }
 
 var eventManager = {
@@ -17,7 +22,7 @@ var eventManager = {
         allEvents: [],
         sistemWorks: true,
         /// Main tasks
-        createEvent: function (eventName, isAdult = true, eventDate) {
+        createEvent: function (eventName, isAdult = true, eventDate, price = 0) {
             if (!eventName) {
                 console.log("Event name is requred!");
                 return;
@@ -27,12 +32,13 @@ var eventManager = {
                 return;
             }
             var date = new Date(eventDate);
-            var event = new Event(eventName, isAdult, this.id++, date);
+            var event = new Event(eventName, isAdult, this.id++, date, price);
             this.allEvents.push(event);
 
         }
         ,
         viewEvents: function () {
+            var eventMark = "";
             for (let event of this.allEvents) {
                 var age = '';
                 if (event.isForAdult) {
@@ -41,7 +47,10 @@ var eventManager = {
                 else {
                     age = "less than 18";
                 }
-                console.log(event.eventName + ': for ' + age);
+                if (event.entryPrice > 0) eventMark = "$";
+                else eventMark = "!";
+
+                console.log(eventMark + event.eventName + ': for ' + age);
             }
         }
         ,
@@ -86,7 +95,7 @@ var eventManager = {
             }
         }
         ,
-        addClient: function (eventName, clientName, clientGender, clientAge) {
+        addClient: function (eventName, clientName, clientGender, clientAge, walet = 0) {
             var exist = false;
             if (!eventName || !clientAge || !clientGender || !clientAge) {
                 console.log("Please enter all requred data!");
@@ -94,6 +103,10 @@ var eventManager = {
             }
             if (this.sistemWorks == false) {
                 console.log("Sistem is not working now");
+                return;
+            }
+            if (walet == 0) {
+                console.log("You should first add some money to your walet");
                 return;
             }
 
@@ -106,8 +119,18 @@ var eventManager = {
                         return;
                     }
                     else {
-                        this.allEvents[i].clients.push(client);
-                        console.log("Added sucessfully");
+                        if (this.allEvents[i].entryPrice > walet) {
+                            console.log("Sorry you dont have enough money for this event");
+                        }
+                        else {
+
+
+                            this.allEvents[i].clients.push(client);
+                            if (this.canBeVip(client) == false) {
+                                walet -= this.allEvents[i].entryPrice;
+                            }
+                            console.log("Added sucessfully");
+                        }
                     }
                 }
             }
@@ -127,7 +150,8 @@ var eventManager = {
                         for (var j = 0; j < this.allEvents[i].clients.length; j++) {
                             console.log(this.allEvents[i].clients[j].name
                                 + ": " + this.allEvents[i].clients[j].age
-                                + ": " + this.allEvents[i].clients[j].gender);
+                                + ": " + this.allEvents[i].clients[j].gender
+                                + ": " + this.allEvents[i].id);
                         }
                     }
                 }
@@ -223,11 +247,31 @@ var eventManager = {
                 }
             }
         },
-    /// TODO
+        /// TODO
         filterEvents: function () {
 
         },
-    
+        canBeVip: function (client) {
+            var counter = 0;
+            for (var j = 0; j < this.allEvents.length; j++) {
+                for (var k = 0; k < this.allEvents[j].clients.length; k++) {
+                    if (this.allEvents[j].clients[k].name === client.name) {
+                        counter++;
+                    }
+                }
+            }
+            if (counter == 5) {
+                client.isVip = true;
+                return true;
+            }
+
+            client.isVip = false;
+            return false
+        },
+        arhiveEvent: function (status) {
+            if 
+
+        }
 
     }
 ;
@@ -235,20 +279,26 @@ var eventManager = {
 
 eventManager.createEvent("E1", true, "January 31 2005 12:30");
 eventManager.createEvent("E2", false, "June 15 2014 13:20");
-eventManager.createEvent("E3", false);
+eventManager.createEvent("E3", false, "", 44);
 eventManager.createEvent("E4", true);
-eventManager.updateEvent(2, "E2 updated", true);
-eventManager.addClient("E2 updated", "Pesho", "male", 18);
-eventManager.addClient("E4", "Ginka", "female", 38);
-eventManager.addClient("E2 updated", "Batman", "male", 13);
-eventManager.addClient("E1", "Topstera", "male", 14);
-eventManager.addClient("E3", "Goshko", "male", 4);
-eventManager.deleteClient("Pesho");
-eventManager.viewClients(2, "female");
+//eventManager.updateEvent(2, "E2 updated", true);
+eventManager.addClient("E2", "Pesho", "male", 18, 44);
+eventManager.addClient("E4", "Ginka", "female", 38, 3);
+eventManager.addClient("E2", "Batman", "male", 13, 4);
+eventManager.addClient("E1", "Topstera", "male", 14, 67);
+eventManager.addClient("E3", "Goshko", "male", 4, 150);
+eventManager.addClient("E3", "Goshko", "male", 5, 150);
+eventManager.addClient("E3", "Goshko", "male", 66, 150);
+eventManager.addClient("E3", "Goshko", "male", 64, 150);
+eventManager.addClient("E3", "Goshko", "male", 13, 150);
+eventManager.addClient("E3", "Goshko", "male", 13, 1550);
+
+//eventManager.deleteClient("Pesho");
+eventManager.viewClients("E2");
 eventManager.manageSistem(false);
 eventManager.addClient(6, "Praksh", "male", 55);
 eventManager.viewEvents();
-eventManager.viewMostVisitedEvent();
+// eventManager.viewMostVisitedEvent();
 eventManager.viewMinors();
-eventManager.viewGroupedEvents();
+// eventManager.viewGroupedEvents();
 
