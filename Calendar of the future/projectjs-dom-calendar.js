@@ -40,16 +40,20 @@ var domLib = {
     changeHtmlContent: function (element, newContent) {
         return this.getElementById(element).innerHTML = newContent;
     },
+    setHtmlContent: function (element, content) {
+        return this.getElementById(element).innerHTML = content;
+    },
     getHtmlContent: function (element) {
-        return this.getElementById(element).outerHTML;
+        return this.getElementById(element).innerHTML;
     },
     changeStyle: function (element, styleType, newStyle) {
         return this.getElementById(element).style[styleType] = newStyle;
     },
-    addStyles: function (element, styles) {
-        for (let s of styles) {
-            return this.getElementById(element).setAttribute(s);
+    setStyle: function (element, propertyObject) {
+        for (var property in propertyObject) {
+            this.getElementById(element).style[property] = propertyObject[property];
         }
+        return this;
     },
     getParent: function (child) {
         return this.getElementById(child).parentElement.nodeName;
@@ -57,20 +61,22 @@ var domLib = {
     getPreviousNode: function (element) {
         return this.getElementById(element).previousSibling.innerHTML;
     },
-    getNextNode : function (element) {
-        return this.getElementById(element).nextSibling.innerHTML;
+    getNextNode: function (element) {
+        return this.getElementById(element).nextSibling;
     },
-    getChildNodes : function (element) {
+    getChildNodes: function (element) {
         var nodeKids = this.getElementById(element).childNodes;
-        var nodes = "";
-        for (let node of nodeKids) {
+        var nodes = [];
+        for (var i =0; i < nodeKids.length; i++) {
             //this.getElementById(element).innerHTML = node.nodeName;
-            nodes += node.nodeName;
+            nodes[i] =  nodeKids[i];
         }
         return nodes;
     },
-    createEvent : function (element, event, todoFunction) {
-        return this.getElementById(element).addEventListener(event, todoFunction);
+    createEvent: function (element, event, todoFunction) {
+        if (element) {
+            return this.getElementById(element).addEventListener(event, todoFunction);
+        }
     }
 
 };
