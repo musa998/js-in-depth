@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <title>Board</title>
+</head>
+<body onload='createBoard.draw()'>
+<div class="container">
+    <div class="col-xs-9">
+        <button onclick="Game.start()" type="button" class="btn btn-primary  btn-lg" style="float: right; margin: 50px 0 0 90px">Start Game</button>
+    </div>
+    <div class="row centered">
+        <canvas id="chess" width="950" height="700"></canvas>
+    </div>
+</div>
+<script src="board.js"></script>
+<script src="gameStart.js"></script>
+</body>
+
+</html>
