@@ -1,1 +1,2 @@
-# js-in-depth
+# js-in-depth 2018
+
